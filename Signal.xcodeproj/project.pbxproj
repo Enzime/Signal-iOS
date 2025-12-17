@@ -3936,6 +3936,11 @@
 		F9FA363629F335E500C13830 /* ProvisioningCipherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9FA363529F335E500C13830 /* ProvisioningCipherTests.swift */; };
 		F9FAABD829DB55940004B383 /* Progress+Signal.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9FAABD729DB55940004B383 /* Progress+Signal.swift */; };
 		FCB11D8C1A129A76002F93FB /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FCB11D8B1A129A76002F93FB /* CoreMedia.framework */; };
+		BE0001012F1234560001BE01 /* ScreenShareManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE0001002F1234560001BE01 /* ScreenShareManager.swift */; };
+		BE0001032F1234560001BE01 /* ScreenShareSocketServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE0001022F1234560001BE01 /* ScreenShareSocketServer.swift */; };
+		BE0002012F1234560001BE01 /* SampleHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE0002002F1234560001BE01 /* SampleHandler.swift */; };
+		BE0002032F1234560001BE01 /* ScreenShareSocketConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE0002022F1234560001BE01 /* ScreenShareSocketConnection.swift */; };
+		BE0002052F1234560001BE01 /* SignalBroadcastExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = BE0002042F1234560001BE01 /* SignalBroadcastExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -4048,6 +4053,7 @@
 			files = (
 				342FFE8F27245851000AC89F /* SignalNSE.appex in Embed Foundation Extensions */,
 				453518721FC635DD00210559 /* SignalShareExtension.appex in Embed Foundation Extensions */,
+				BE0002052F1234560001BE01 /* SignalBroadcastExtension.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -8168,6 +8174,14 @@
 		FEFD8A174F57F4C221747D51 /* Pods-SignalServiceKitTests.app store release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SignalServiceKitTests.app store release.xcconfig"; path = "Target Support Files/Pods-SignalServiceKitTests/Pods-SignalServiceKitTests.app store release.xcconfig"; sourceTree = "<group>"; };
 		FF348A86F3FA1E5B5A62F033 /* Pods-SignalNSE.profiling.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SignalNSE.profiling.xcconfig"; path = "Target Support Files/Pods-SignalNSE/Pods-SignalNSE.profiling.xcconfig"; sourceTree = "<group>"; };
 		FF39DCC8D1F7DFD3708276E2 /* Pods-SignalTests.app store release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SignalTests.app store release.xcconfig"; path = "Target Support Files/Pods-SignalTests/Pods-SignalTests.app store release.xcconfig"; sourceTree = "<group>"; };
+		BE0001002F1234560001BE01 /* ScreenShareManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenShareManager.swift; sourceTree = "<group>"; };
+		BE0001022F1234560001BE01 /* ScreenShareSocketServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenShareSocketServer.swift; sourceTree = "<group>"; };
+		BE0002002F1234560001BE01 /* SampleHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleHandler.swift; sourceTree = "<group>"; };
+		BE0002022F1234560001BE01 /* ScreenShareSocketConnection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenShareSocketConnection.swift; sourceTree = "<group>"; };
+		BE0002042F1234560001BE01 /* SignalBroadcastExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = SignalBroadcastExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		BE0002062F1234560001BE01 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BE0002082F1234560001BE01 /* SignalBroadcastExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SignalBroadcastExtension.entitlements; sourceTree = "<group>"; };
+		BE000209AF1234560001BE01 /* SignalBroadcastExtension-AppStore.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "SignalBroadcastExtension-AppStore.entitlements"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -8272,6 +8286,13 @@
 			files = (
 				259D4DF2486F14DB112B3999 /* Pods_SignalServiceKitTests.framework in Frameworks */,
 				F9C5C89F289451B900548EEE /* SignalServiceKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BE0004022F1234560001BE01 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -11826,6 +11847,7 @@
 				D221A093169C9E5E00537ABF /* Signal */,
 				342FFE8927245850000AC89F /* SignalNSE */,
 				453518691FC635DD00210559 /* SignalShareExtension */,
+				BE0003002F1234560001BE01 /* SignalBroadcastExtension */,
 				34A954A9271A471200B05242 /* SignalUI */,
 				F9C5C898289451B900548EEE /* SignalServiceKit */,
 				05EA61412CC9437300B16D4E /* Config */,
@@ -11845,6 +11867,7 @@
 				F9C5C897289451B900548EEE /* SignalServiceKit.framework */,
 				F9C5C89E289451B900548EEE /* SignalServiceKitTests.xctest */,
 				453518681FC635DD00210559 /* SignalShareExtension.appex */,
+				BE0002042F1234560001BE01 /* SignalBroadcastExtension.appex */,
 				D221A0AA169C9E5F00537ABF /* SignalTests.xctest */,
 				34A954A8271A471200B05242 /* SignalUI.framework */,
 				34A954B1271A471300B05242 /* SignalUITests.xctest */,
@@ -13760,6 +13783,8 @@
 				D9E43BDE2CC194140001536E /* RTCIceServerFetcher.swift */,
 				D9E43BDF2CC194140001536E /* SignalCall.swift */,
 				D9E43BE02CC194140001536E /* WebRTCCallMessageHandler.swift */,
+				BE0001002F1234560001BE01 /* ScreenShareManager.swift */,
+				BE0001022F1234560001BE01 /* ScreenShareSocketServer.swift */,
 			);
 			path = Calls;
 			sourceTree = "<group>";
@@ -15332,6 +15357,18 @@
 			path = Requests;
 			sourceTree = "<group>";
 		};
+		BE0003002F1234560001BE01 /* SignalBroadcastExtension */ = {
+			isa = PBXGroup;
+			children = (
+				BE0002002F1234560001BE01 /* SampleHandler.swift */,
+				BE0002022F1234560001BE01 /* ScreenShareSocketConnection.swift */,
+				BE0002062F1234560001BE01 /* Info.plist */,
+				BE0002082F1234560001BE01 /* SignalBroadcastExtension.entitlements */,
+				BE000209AF1234560001BE01 /* SignalBroadcastExtension-AppStore.entitlements */,
+			);
+			path = SignalBroadcastExtension;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -15598,6 +15635,23 @@
 			productReference = F9C5C89E289451B900548EEE /* SignalServiceKitTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		BE0004002F1234560001BE01 /* SignalBroadcastExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BE0005002F1234560001BE01 /* Build configuration list for PBXNativeTarget "SignalBroadcastExtension" */;
+			buildPhases = (
+				BE0004012F1234560001BE01 /* Sources */,
+				BE0004022F1234560001BE01 /* Frameworks */,
+				BE0004032F1234560001BE01 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SignalBroadcastExtension;
+			productName = SignalBroadcastExtension;
+			productReference = BE0002042F1234560001BE01 /* SignalBroadcastExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -15752,6 +15806,7 @@
 				D221A0A9169C9E5F00537ABF /* SignalTests */,
 				453518671FC635DD00210559 /* SignalShareExtension */,
 				342FFE8727245850000AC89F /* SignalNSE */,
+				BE0004002F1234560001BE01 /* SignalBroadcastExtension */,
 				34A954A7271A471200B05242 /* SignalUI */,
 				34A954B0271A471300B05242 /* SignalUITests */,
 				F9C5C896289451B900548EEE /* SignalServiceKit */,
@@ -17024,6 +17079,13 @@
 				D90AA39E2CC9616B00021CB0 /* sticker_pack_02.txtproto in Resources */,
 				F908AA7D28CE629700472E68 /* test-apng.png in Resources */,
 				F927478828CFE9B10056EAFE /* test-png.png in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BE0004032F1234560001BE01 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -18303,6 +18365,8 @@
 				880D90302481E617003D2B14 /* SignalApp.swift in Sources */,
 				50C861E62EC52CA90001A4FA /* SignalAttachmentCloner.swift in Sources */,
 				D9E43C2D2CC194140001536E /* SignalCall.swift in Sources */,
+				BE0001012F1234560001BE01 /* ScreenShareManager.swift in Sources */,
+				BE0001032F1234560001BE01 /* ScreenShareSocketServer.swift in Sources */,
 				8822558D26B9D1D7001A33C4 /* SignalDotMePhoneNumberLink.swift in Sources */,
 				D9E43C0F2CC194140001536E /* SimulatorCallUIAdaptee.swift in Sources */,
 				6640132A2BFEB9C700F10FC4 /* SingleOrDoubleTapGestureRecognizer.swift in Sources */,
@@ -19963,6 +20027,15 @@
 				F942626A289B1B5500460798 /* ViewOnceMessagesTest.swift in Sources */,
 				D9C964092BE44D700058F143 /* XCTest+Thenable.swift in Sources */,
 				724D47B22B97BE96001BE973 /* ZkParamsMigratorTest.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BE0004012F1234560001BE01 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BE0002012F1234560001BE01 /* SampleHandler.swift in Sources */,
+				BE0002032F1234560001BE01 /* ScreenShareSocketConnection.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22248,6 +22321,208 @@
 			};
 			name = "Testable Release";
 		};
+		BE0005012F1234560001BE01 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_ENTITLEMENTS = SignalBroadcastExtension/SignalBroadcastExtension.entitlements;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				INFOPLIST_FILE = SignalBroadcastExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Signal Screen Share";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "$(SIGNAL_BUNDLEID_PREFIX).signal.SignalBroadcastExtension";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		BE0005022F1234560001BE01 /* App Store Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_ENTITLEMENTS = "SignalBroadcastExtension/SignalBroadcastExtension-AppStore.entitlements";
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = SignalBroadcastExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Signal Screen Share";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "$(SIGNAL_BUNDLEID_PREFIX).signal.SignalBroadcastExtension";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = "App Store Release";
+		};
+		BE0005032F1234560001BE01 /* Profiling */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_ENTITLEMENTS = SignalBroadcastExtension/SignalBroadcastExtension.entitlements;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = SignalBroadcastExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Signal Screen Share";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "$(SIGNAL_BUNDLEID_PREFIX).signal.SignalBroadcastExtension";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Profiling;
+		};
+		BE0005042F1234560001BE01 /* Testable Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_ENTITLEMENTS = SignalBroadcastExtension/SignalBroadcastExtension.entitlements;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = SignalBroadcastExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Signal Screen Share";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "$(SIGNAL_BUNDLEID_PREFIX).signal.SignalBroadcastExtension";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = "Testable Release";
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -22346,6 +22621,17 @@
 				F9C5C8B1289451B900548EEE /* App Store Release */,
 				F9C5C8B2289451B900548EEE /* Profiling */,
 				F9C5C8B3289451B900548EEE /* Testable Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = "App Store Release";
+		};
+		BE0005002F1234560001BE01 /* Build configuration list for PBXNativeTarget "SignalBroadcastExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BE0005012F1234560001BE01 /* Debug */,
+				BE0005022F1234560001BE01 /* App Store Release */,
+				BE0005032F1234560001BE01 /* Profiling */,
+				BE0005042F1234560001BE01 /* Testable Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = "App Store Release";
