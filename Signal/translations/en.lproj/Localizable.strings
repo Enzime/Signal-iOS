@@ -1438,6 +1438,12 @@
 /* Accessibility label for unmuting the microphone */
 "CALL_VIEW_UNMUTE_LABEL" = "Unmute";
 
+/* Accessibility label for starting screen sharing */
+"CALL_VIEW_START_SCREEN_SHARE_LABEL" = "Share Screen";
+
+/* Accessibility label for stopping screen sharing */
+"CALL_VIEW_STOP_SCREEN_SHARE_LABEL" = "Stop Sharing";
+
 /* Shown in the header below the name of the call while waiting for the host to allow you to enter the call. */
 "CALL_WAITING_TO_BE_LET_IN" = "Waiting to be let in…";
 
@@ -3693,6 +3699,24 @@
 
 /* Toast view text informing user about swiping to screen share */
 "GROUP_CALL_SCREEN_SHARE_TOAST" = "Swipe up to view screen share";
+
+/* Text for a toast confirming that screen sharing has been started for a call. */
+"SCREEN_SHARE_ON_CONFIRMATION_TOAST_LABEL" = "Screen sharing";
+
+/* Text for a toast confirming that screen sharing has been stopped for a call. */
+"SCREEN_SHARE_OFF_CONFIRMATION_TOAST_LABEL" = "Stopped sharing";
+
+/* Title for alert when trying to screen share outside of a call */
+"SCREEN_SHARE_NOT_IN_CALL_TITLE" = "Not in a call";
+
+/* Message for alert when trying to screen share outside of a call */
+"SCREEN_SHARE_NOT_IN_CALL_MESSAGE" = "You can only share your screen during an active call.";
+
+/* Error message when screen share cannot connect to the main app */
+"SCREEN_SHARE_ERROR_CONNECTION_FAILED" = "Unable to start screen sharing. Please try again.";
+
+/* Error message when trying to screen share but not in a call */
+"SCREEN_SHARE_ERROR_NOT_IN_CALL" = "Please join or start a call first.";
 
 /* Text in conversation view for a group call that someone started. We don't know who */
 "GROUP_CALL_SOMEONE_STARTED_MESSAGE" = "Someone started a group call";

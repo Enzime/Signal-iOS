@@ -1272,6 +1272,11 @@ extension IndividualCallViewController: CallControlsDelegate {
     func didPressMore() {
         owsFailDebug("More button should not be available in Call Controls for individual calls!")
     }
+
+    func didPressScreenShare() {
+        // Screen share is handled by the CallControlsViewModel
+        // This delegate method is called after the action is performed
+    }
 }
 
 extension IndividualCallViewController: AnimatableLocalMemberViewDelegate {

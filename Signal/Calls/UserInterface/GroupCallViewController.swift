@@ -2053,6 +2053,11 @@ extension GroupCallViewController: CallControlsDelegate {
             bottomSheetStateManager.submitState(.callControls)
         }
     }
+
+    func didPressScreenShare() {
+        // Screen share is handled by the CallControlsViewModel
+        // This delegate method is called after the action is performed
+    }
 }
 
 // MARK: CallMemberErrorPresenter

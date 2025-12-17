@@ -10,6 +10,7 @@ class CallControlsConfirmationToastView: UIView {
         case mute(isOn: Bool)
         case speakerphone(isOn: Bool)
         case ring(isOn: Bool)
+        case screenShare(isOn: Bool)
 
         var imageName: String {
             switch self {
@@ -30,6 +31,12 @@ class CallControlsConfirmationToastView: UIView {
                     return "bell"
                 } else {
                     return "bell-slash"
+                }
+            case .screenShare(let isOn):
+                if isOn {
+                    return "share_screen"
+                } else {
+                    return "share_screen"
                 }
             }
         }
@@ -70,6 +77,18 @@ class CallControlsConfirmationToastView: UIView {
                     return OWSLocalizedString(
                         "RING_OFF_CONFIRMATION_TOAST_LABEL",
                         comment: "Text for a toast confirming that ringing has been turned off for a call."
+                    )
+                }
+            case .screenShare(let isOn):
+                if isOn {
+                    return OWSLocalizedString(
+                        "SCREEN_SHARE_ON_CONFIRMATION_TOAST_LABEL",
+                        comment: "Text for a toast confirming that screen sharing has been started for a call."
+                    )
+                } else {
+                    return OWSLocalizedString(
+                        "SCREEN_SHARE_OFF_CONFIRMATION_TOAST_LABEL",
+                        comment: "Text for a toast confirming that screen sharing has been stopped for a call."
                     )
                 }
             }
