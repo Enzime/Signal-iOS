@@ -59,6 +59,17 @@ class CallControls: UIView {
         button.selectedBackgroundColor = button.unselectedBackgroundColor
         return button
     }()
+    private lazy var screenShareButton: CallButton = {
+        let button = createButton(
+            iconName: "display",
+            selectedIconName: "display",
+            accessibilityLabel: viewModel.screenShareButtonAccessibilityLabel) { [viewModel] _ in
+                viewModel.didPressScreenShare()
+            }
+        // Use a different tint when selected to indicate active screen sharing
+        button.selectedIconColor = .ows_accentGreen
+        return button
+    }()
     private lazy var moreButton = createButton(
         iconName: "more",
         accessibilityLabel: viewModel.moreButtonAccessibilityLabel) { [viewModel] _ in
@@ -154,6 +165,7 @@ class CallControls: UIView {
         stackView.addArrangedSubview(flipCameraButton)
         stackView.addArrangedSubview(videoButton)
         stackView.addArrangedSubview(muteButton)
+        stackView.addArrangedSubview(screenShareButton)
         stackView.addArrangedSubview(moreButton)
         stackView.addArrangedSubview(ringButton)
         stackView.addArrangedSubview(hangUpButton)
@@ -172,6 +184,7 @@ class CallControls: UIView {
         moreButton.isHidden = viewModel.moreButtonIsHidden
         videoButton.isHidden = viewModel.videoButtonIsHidden
         flipCameraButton.isHidden = viewModel.flipCameraButtonIsHidden
+        screenShareButton.isHidden = viewModel.screenShareButtonIsHidden
         ringButton.isHidden = viewModel.ringButtonIsHidden
 
         // Bottom row
@@ -192,6 +205,7 @@ class CallControls: UIView {
         audioSourceButton.isSelected = viewModel.audioSourceButtonIsSelected
         ringButton.isSelected = viewModel.ringButtonIsSelected
         flipCameraButton.isSelected = viewModel.flipCameraButtonIsSelected
+        screenShareButton.isSelected = viewModel.screenShareButtonIsSelected
         moreButton.isSelected = viewModel.moreButtonIsSelected
 
         if !viewModel.audioSourceButtonIsHidden {
@@ -228,6 +242,7 @@ class CallControls: UIView {
         videoButton.accessibilityLabel = viewModel.videoButtonAccessibilityLabel
         ringButton.accessibilityLabel = viewModel.ringButtonAccessibilityLabel
         flipCameraButton.accessibilityLabel = viewModel.flipCameraButtonAccessibilityLabel
+        screenShareButton.accessibilityLabel = viewModel.screenShareButtonAccessibilityLabel
         moreButton.accessibilityLabel = viewModel.moreButtonAccessibilityLabel
 
         if self.heightAfterLastUpdate != self.currentHeight {
@@ -559,6 +574,19 @@ private class CallControlsViewModel {
         }
     }
 
+    @MainActor
+    var screenShareButtonIsHidden: Bool {
+        // Screen sharing is only available when joined to a call
+        switch call.mode {
+        case .individual(let call):
+            // For individual calls, only show when connected
+            return call.state != .connected
+        case .groupThread(let call as GroupCall), .callLink(let call as GroupCall):
+            // For group calls, only show when joined
+            return call.ringRtcCall.localDeviceState.joinState != .joined
+        }
+    }
+
     var videoButtonIsSelected: Bool {
         return call.isOutgoingVideoMuted
     }
@@ -583,6 +611,11 @@ private class CallControlsViewModel {
 
     var flipCameraButtonIsSelected: Bool {
         return false
+    }
+
+    @MainActor
+    var screenShareButtonIsSelected: Bool {
+        return call.isLocalSharingScreen
     }
 
     var moreButtonIsSelected: Bool {
@@ -618,6 +651,10 @@ extension CallControlsViewModel: GroupCallObserver {
     func groupCallEnded(_ call: GroupCall, reason: CallEndReason) {
         refreshView?()
     }
+
+    func groupCallLocalSharingScreenDidChange(_ call: GroupCall, isLocalSharingScreen: Bool) {
+        refreshView?()
+    }
 }
 
 extension CallControlsViewModel: IndividualCallObserver {
@@ -642,6 +679,10 @@ extension CallControlsViewModel: IndividualCallObserver {
     }
 
     func individualCallRemoteSharingScreenDidChange(_ call: IndividualCall, isRemoteSharingScreen: Bool) {
+        refreshView?()
+    }
+
+    func individualCallLocalSharingScreenDidChange(_ call: IndividualCall, isLocalSharingScreen: Bool) {
         refreshView?()
     }
 }
@@ -727,6 +768,16 @@ extension CallControlsViewModel {
             callService.updateCameraSource(call: call, isUsingFrontCamera: !isUsingFrontCamera)
             refreshView?()
         }
+    }
+
+    @MainActor
+    func didPressScreenShare() {
+        if call.isLocalSharingScreen {
+            callService.stopScreenShare()
+        } else {
+            callService.presentScreenSharePicker()
+        }
+        refreshView?()
     }
 
     @objc
@@ -824,6 +875,21 @@ extension CallControlsViewModel {
             "CALL_VIEW_SWITCH_CAMERA_DIRECTION",
             comment: "Accessibility label to toggle front- vs. rear-facing camera"
         )
+    }
+
+    @MainActor
+    public var screenShareButtonAccessibilityLabel: String {
+        if call.isLocalSharingScreen {
+            return OWSLocalizedString(
+                "CALL_VIEW_STOP_SCREEN_SHARE_LABEL",
+                comment: "Accessibility label for stopping screen sharing"
+            )
+        } else {
+            return OWSLocalizedString(
+                "CALL_VIEW_START_SCREEN_SHARE_LABEL",
+                comment: "Accessibility label for starting screen sharing"
+            )
+        }
     }
 
     public var moreButtonAccessibilityLabel: String {

@@ -1423,6 +1423,12 @@
 /* Accessibility label to toggle front- vs. rear-facing camera */
 "CALL_VIEW_SWITCH_CAMERA_DIRECTION" = "Switch Camera Direction";
 
+/* Accessibility label for starting screen sharing */
+"CALL_VIEW_START_SCREEN_SHARE_LABEL" = "Share Screen";
+
+/* Accessibility label for stopping screen sharing */
+"CALL_VIEW_STOP_SCREEN_SHARE_LABEL" = "Stop Sharing Screen";
+
 /* Accessibility label for turning off call ringing */
 "CALL_VIEW_TURN_OFF_RINGING" = "Turn off ringing";
 

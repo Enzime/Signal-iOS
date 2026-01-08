@@ -44,6 +44,7 @@ final class CallService: CallServiceStateObserver, CallServiceStateDelegate {
     let callLinkManager: CallLinkManagerImpl
     let callLinkFetcher: CallLinkFetcherImpl
     let callLinkStateUpdater: CallLinkStateUpdater
+    let screenShareCaptureController: ScreenShareCaptureController
 
     private var adHocCallStateObserver: AdHocCallStateObserver?
 
@@ -135,9 +136,11 @@ final class CallService: CallServiceStateObserver, CallServiceStateDelegate {
             db: db,
             tsAccountManager: tsAccountManager
         )
+        self.screenShareCaptureController = ScreenShareCaptureController()
         self.db = db
         self.deviceSleepManager = deviceSleepManager
         self.callManager.delegate = self
+        self.screenShareCaptureController.delegate = self
         SwiftSingletons.register(self)
         self.callServiceState.addObserver(self)
 
@@ -416,6 +419,52 @@ final class CallService: CallServiceStateObserver, CallServiceStateDelegate {
 
     func updateCameraSource(call: SignalCall, isUsingFrontCamera: Bool) {
         call.videoCaptureController.switchCamera(isUsingFrontCamera: isUsingFrontCamera)
+    }
+
+    // MARK: - Screen Sharing
+
+    /// Presents the system broadcast picker to start screen sharing.
+    func presentScreenSharePicker() {
+        guard callServiceState.currentCall != nil else {
+            owsFailDebug("No current call to share screen with")
+            return
+        }
+
+        screenShareCaptureController.showBroadcastPicker()
+    }
+
+    /// Stops screen sharing if currently active.
+    func stopScreenShare() {
+        guard let currentCall = callServiceState.currentCall else {
+            owsFailDebug("No current call")
+            return
+        }
+
+        screenShareCaptureController.stopSharing()
+        updateLocalSharingScreenState(isSharing: false)
+    }
+
+    /// Updates the local screen sharing state for the current call.
+    private func updateLocalSharingScreenState(isSharing: Bool) {
+        guard let currentCall = callServiceState.currentCall else { return }
+
+        switch currentCall.mode {
+        case .individual(let call):
+            call.isLocalSharingScreen = isSharing
+        case .groupThread(let call as GroupCall), .callLink(let call as GroupCall):
+            call.isLocalSharingScreen = isSharing
+        }
+    }
+
+    /// Returns whether screen sharing is currently active.
+    var isScreenShareActive: Bool {
+        return screenShareCaptureController.isSharing
+    }
+
+    /// Returns whether screen sharing is available for the current call.
+    var isScreenShareAvailable: Bool {
+        guard callServiceState.currentCall != nil else { return false }
+        return screenShareCaptureController.isScreenShareAvailable
     }
 
     private func configureDataMode() {
@@ -1627,5 +1676,14 @@ extension NetworkInterfaceSet {
         case .ethernet, .wifi, .loopback:
             return self.contains(.wifi)
         }
+    }
+}
+
+// MARK: - ScreenShareCaptureControllerDelegate
+
+extension CallService: ScreenShareCaptureControllerDelegate {
+    func screenShareCaptureController(_ controller: ScreenShareCaptureController, didChangeStatus isSharing: Bool) {
+        Logger.info("Screen share status changed: \(isSharing)")
+        updateLocalSharingScreenState(isSharing: isSharing)
     }
 }

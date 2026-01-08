@@ -58,6 +58,16 @@ enum CallMode {
     }
 
     @MainActor
+    var isLocalSharingScreen: Bool {
+        switch self {
+        case .individual(let call):
+            return call.isLocalSharingScreen
+        case .groupThread(let call as GroupCall), .callLink(let call as GroupCall):
+            return call.isLocalSharingScreen
+        }
+    }
+
+    @MainActor
     var joinState: JoinState {
         switch self {
         case .individual(let call):
@@ -180,6 +190,7 @@ class SignalCall: CallManagerCallReference {
     @MainActor var hasTerminated: Bool { mode.hasTerminated }
     @MainActor var isOutgoingAudioMuted: Bool { mode.isOutgoingAudioMuted }
     @MainActor var isOutgoingVideoMuted: Bool { mode.isOutgoingVideoMuted }
+    @MainActor var isLocalSharingScreen: Bool { mode.isLocalSharingScreen }
     @MainActor var joinState: JoinState { mode.joinState }
     var isFull: Bool { mode.isFull }
     var caller: SignalServiceAddress? { mode.caller }

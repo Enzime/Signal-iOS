@@ -24,6 +24,9 @@ protocol GroupCallObserver: AnyObject {
     func groupCallReceivedReactions(_ call: GroupCall, reactions: [SignalRingRTC.Reaction])
     func groupCallReceivedRaisedHands(_ call: GroupCall, raisedHands: [DemuxId])
 
+    @MainActor
+    func groupCallLocalSharingScreenDidChange(_ call: GroupCall, isLocalSharingScreen: Bool)
+
     /// Invoked if a call message failed to send because of a safety number change
     /// UI observing call state may choose to alert the user (e.g. presenting a SafetyNumberConfirmationSheet)
     func handleUntrustedIdentityError(_ call: GroupCall)
@@ -36,6 +39,7 @@ extension GroupCallObserver {
     func groupCallEnded(_ call: GroupCall, reason: CallEndReason) {}
     func groupCallReceivedReactions(_ call: GroupCall, reactions: [SignalRingRTC.Reaction]) {}
     func groupCallReceivedRaisedHands(_ call: GroupCall, raisedHands: [DemuxId]) {}
+    func groupCallLocalSharingScreenDidChange(_ call: GroupCall, isLocalSharingScreen: Bool) {}
     func handleUntrustedIdentityError(_ call: GroupCall) {}
 }
 
@@ -49,6 +53,16 @@ class GroupCall: SignalRingRTC.GroupCallDelegate {
     let ringRtcCall: SignalRingRTC.GroupCall
     private(set) var raisedHands: [DemuxId] = []
     let videoCaptureController: VideoCaptureController
+
+    @MainActor
+    var isLocalSharingScreen = false {
+        didSet {
+            Logger.info("\(isLocalSharingScreen)")
+            observers.elements.forEach {
+                $0.groupCallLocalSharingScreenDidChange(self, isLocalSharingScreen: isLocalSharingScreen)
+            }
+        }
+    }
 
     /// Tracks whether or not we've called connect().
     ///
