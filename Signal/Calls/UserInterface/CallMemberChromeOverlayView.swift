@@ -325,7 +325,7 @@ class CallMemberChromeOverlayView: UIView, CallMemberComposableView {
             self.flipCameraImageWidthConstraint?.constant = Constants.flipCameraImageDimensionWhenPipExpanded
             animateFlipCameraButtonAlphaIfNecessary(
                 call: call,
-                newIsHidden: call.isOutgoingVideoMuted
+                newIsHidden: call.isOutgoingVideoMuted || call.isLocalSharingScreen
             )
         } else if width >= Constants.mediumPipMinWidth {
             flipCameraButton.isEnabled = false
@@ -334,7 +334,7 @@ class CallMemberChromeOverlayView: UIView, CallMemberComposableView {
             self.flipCameraImageWidthConstraint?.constant = Constants.flipCameraImageDimensionWhenPipNormal
             animateFlipCameraButtonAlphaIfNecessary(
                 call: call,
-                newIsHidden: call.isOutgoingVideoMuted
+                newIsHidden: call.isOutgoingVideoMuted || call.isLocalSharingScreen
             )
         } else {
             animateFlipCameraButtonAlphaIfNecessary(

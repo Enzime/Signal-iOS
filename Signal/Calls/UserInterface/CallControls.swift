@@ -410,6 +410,11 @@ private class CallControlsViewModel {
             return true
         }
 
+        // Hide flip camera when screen sharing is active
+        if call.isLocalSharingScreen {
+            return true
+        }
+
         switch call.mode {
         case .individual(let call):
             return ![.idle, .dialing, .remoteRinging, .localRinging_Anticipatory, .localRinging_ReadyToAnswer].contains(call.state)
@@ -642,6 +647,10 @@ extension CallControlsViewModel: IndividualCallObserver {
     }
 
     func individualCallRemoteSharingScreenDidChange(_ call: IndividualCall, isRemoteSharingScreen: Bool) {
+        refreshView?()
+    }
+
+    func individualCallLocalSharingScreenDidChange(_ call: IndividualCall, isLocalSharingScreen: Bool) {
         refreshView?()
     }
 }

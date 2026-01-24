@@ -2124,6 +2124,12 @@ extension GroupCallViewController: CallControlsOverflowPresenter {
     func didTapRaiseOrLowerHand() {
         bottomSheetStateManager.submitState(.callControls)
     }
+
+    func didTapScreenShare() {
+        bottomSheetStateManager.submitState(.callControls)
+        let callService = AppEnvironment.shared.callService!
+        callService.toggleScreenSharing()
+    }
 }
 
 // MARK: - SheetPanDelegate

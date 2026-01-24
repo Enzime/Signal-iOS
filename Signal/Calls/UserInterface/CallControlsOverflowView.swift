@@ -23,17 +23,36 @@ class CallControlsOverflowView: UIView {
         private let raiseHandLabel: UILabel
         let raiseHandButton: UIButton
 
+        private let screenShareLabel: UILabel
+        let screenShareButton: UIButton
+
         var isHandRaised: Bool {
             didSet {
                 if isHandRaised {
-                    self.raiseHandLabel.text =  OWSLocalizedString(
+                    self.raiseHandLabel.text = OWSLocalizedString(
                         "CALL_LOWER_HAND_BUTTON_LABEL",
                         comment: "Label on button for lowering hand in call."
                     )
                 } else {
-                    self.raiseHandLabel.text =  OWSLocalizedString(
+                    self.raiseHandLabel.text = OWSLocalizedString(
                         "CALL_RAISE_HAND_BUTTON_LABEL",
                         comment: "Label on button for raising hand in call."
+                    )
+                }
+            }
+        }
+
+        var isSharingScreen: Bool = false {
+            didSet {
+                if isSharingScreen {
+                    self.screenShareLabel.text = OWSLocalizedString(
+                        "CALL_STOP_SCREEN_SHARE_BUTTON_LABEL",
+                        comment: "Label on button to stop sharing screen in a call."
+                    )
+                } else {
+                    self.screenShareLabel.text = OWSLocalizedString(
+                        "CALL_SHARE_SCREEN_BUTTON_LABEL",
+                        comment: "Label on button to share screen in a call."
                     )
                 }
             }
@@ -44,23 +63,23 @@ class CallControlsOverflowView: UIView {
             self.raiseHandLabel.translatesAutoresizingMaskIntoConstraints = false
             self.raiseHandLabel.textColor = .white
 
-            let icon = UIImageView(image: .init(named: "raise_hand"))
-            icon.tintColor = .white
-            icon.translatesAutoresizingMaskIntoConstraints = false
+            let raiseHandIcon = UIImageView(image: .init(named: "raise_hand"))
+            raiseHandIcon.tintColor = .white
+            raiseHandIcon.translatesAutoresizingMaskIntoConstraints = false
 
             let raiseHandInteriorView = UIView()
             raiseHandInteriorView.isUserInteractionEnabled = false
             raiseHandInteriorView.addSubview(self.raiseHandLabel)
-            raiseHandInteriorView.addSubview(icon)
+            raiseHandInteriorView.addSubview(raiseHandIcon)
             NSLayoutConstraint.activate([
                 self.raiseHandLabel.leadingAnchor.constraint(equalTo: raiseHandInteriorView.leadingAnchor, constant: Constants.buttonHInset),
                 self.raiseHandLabel.topAnchor.constraint(equalTo: raiseHandInteriorView.topAnchor, constant: Constants.buttonVInset),
                 self.raiseHandLabel.bottomAnchor.constraint(equalTo: raiseHandInteriorView.bottomAnchor, constant: -Constants.buttonVInset),
-                self.raiseHandLabel.trailingAnchor.constraint(lessThanOrEqualTo: icon.leadingAnchor),
-                icon.widthAnchor.constraint(equalToConstant: Constants.iconDimension),
-                icon.heightAnchor.constraint(equalToConstant: Constants.iconDimension),
-                icon.trailingAnchor.constraint(equalTo: raiseHandInteriorView.trailingAnchor, constant: -Constants.buttonHInset),
-                icon.centerYAnchor.constraint(equalTo: raiseHandInteriorView.centerYAnchor),
+                self.raiseHandLabel.trailingAnchor.constraint(lessThanOrEqualTo: raiseHandIcon.leadingAnchor),
+                raiseHandIcon.widthAnchor.constraint(equalToConstant: Constants.iconDimension),
+                raiseHandIcon.heightAnchor.constraint(equalToConstant: Constants.iconDimension),
+                raiseHandIcon.trailingAnchor.constraint(equalTo: raiseHandInteriorView.trailingAnchor, constant: -Constants.buttonHInset),
+                raiseHandIcon.centerYAnchor.constraint(equalTo: raiseHandInteriorView.centerYAnchor),
             ])
             raiseHandInteriorView.translatesAutoresizingMaskIntoConstraints = false
 
@@ -69,10 +88,47 @@ class CallControlsOverflowView: UIView {
             raiseHandInteriorView.autoPinEdgesToSuperviewEdges()
             self.raiseHandButton.translatesAutoresizingMaskIntoConstraints = false
 
+            // Screen share button
+            self.screenShareLabel = UILabel()
+            self.screenShareLabel.translatesAutoresizingMaskIntoConstraints = false
+            self.screenShareLabel.textColor = .white
+
+            let screenShareIcon = UIImageView(image: .init(named: "share_screen"))
+            screenShareIcon.tintColor = .white
+            screenShareIcon.translatesAutoresizingMaskIntoConstraints = false
+
+            let screenShareInteriorView = UIView()
+            screenShareInteriorView.isUserInteractionEnabled = false
+            screenShareInteriorView.addSubview(self.screenShareLabel)
+            screenShareInteriorView.addSubview(screenShareIcon)
+            NSLayoutConstraint.activate([
+                self.screenShareLabel.leadingAnchor.constraint(equalTo: screenShareInteriorView.leadingAnchor, constant: Constants.buttonHInset),
+                self.screenShareLabel.topAnchor.constraint(equalTo: screenShareInteriorView.topAnchor, constant: Constants.buttonVInset),
+                self.screenShareLabel.bottomAnchor.constraint(equalTo: screenShareInteriorView.bottomAnchor, constant: -Constants.buttonVInset),
+                self.screenShareLabel.trailingAnchor.constraint(lessThanOrEqualTo: screenShareIcon.leadingAnchor),
+                screenShareIcon.widthAnchor.constraint(equalToConstant: Constants.iconDimension),
+                screenShareIcon.heightAnchor.constraint(equalToConstant: Constants.iconDimension),
+                screenShareIcon.trailingAnchor.constraint(equalTo: screenShareInteriorView.trailingAnchor, constant: -Constants.buttonHInset),
+                screenShareIcon.centerYAnchor.constraint(equalTo: screenShareInteriorView.centerYAnchor),
+            ])
+            screenShareInteriorView.translatesAutoresizingMaskIntoConstraints = false
+
+            self.screenShareButton = UIButton()
+            self.screenShareButton.addSubview(screenShareInteriorView)
+            screenShareInteriorView.autoPinEdgesToSuperviewEdges()
+            self.screenShareButton.translatesAutoresizingMaskIntoConstraints = false
+
             self.isHandRaised = false
 
             super.init(frame: .zero)
-            self.addArrangedSubviews([self.raiseHandButton])
+
+            // Add a separator between buttons
+            let separator = UIView()
+            separator.backgroundColor = .ows_gray65
+            separator.translatesAutoresizingMaskIntoConstraints = false
+            separator.heightAnchor.constraint(equalToConstant: 1).isActive = true
+
+            self.addArrangedSubviews([self.screenShareButton, separator, self.raiseHandButton])
             self.translatesAutoresizingMaskIntoConstraints = false
             self.axis = .vertical
             self.layer.cornerRadius = Constants.stackViewCornerRadius
@@ -147,6 +203,7 @@ class CallControlsOverflowView: UIView {
             buttonStack.bottomAnchor.constraint(equalTo: self.bottomAnchor)
         ])
         buttonStack.raiseHandButton.addTarget(self, action: #selector(CallControlsOverflowView.didTapRaiseHandButton), for: .touchUpInside)
+        buttonStack.screenShareButton.addTarget(self, action: #selector(CallControlsOverflowView.didTapScreenShareButton), for: .touchUpInside)
     }
 
     // MARK: - Constants
@@ -172,6 +229,7 @@ class CallControlsOverflowView: UIView {
 
     func animateIn() {
         self.buttonStack.isHandRaised = self.isLocalHandRaised
+        self.buttonStack.isSharingScreen = self.isLocalSharingScreen
 
         self.isHidden = false
         guard !isAnimating else {
@@ -323,6 +381,11 @@ extension CallControlsOverflowView {
         self.raiseHandSender.raiseHand(raise: !self.isLocalHandRaised)
     }
 
+    @objc
+    private func didTapScreenShareButton() {
+        self.callControlsOverflowPresenter?.didTapScreenShare()
+    }
+
     private var isLocalHandRaised: Bool {
         switch self.call.mode {
         case .individual:
@@ -334,6 +397,15 @@ extension CallControlsOverflowView {
         }
         return false
     }
+
+    private var isLocalSharingScreen: Bool {
+        switch self.call.mode {
+        case .individual(let call):
+            return call.isLocalSharingScreen
+        case .groupThread(let call as GroupCall), .callLink(let call as GroupCall):
+            return call.isLocalSharingScreen
+        }
+    }
 }
 
 // MARK: - CallControlsOverflowPresenter
@@ -343,4 +415,5 @@ protocol CallControlsOverflowPresenter: AnyObject {
     func callControlsOverflowDidDisappear()
     func willSendReaction()
     func didTapRaiseOrLowerHand()
+    func didTapScreenShare()
 }

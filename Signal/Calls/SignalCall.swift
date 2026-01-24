@@ -130,6 +130,16 @@ enum CallMode {
         }
     }
 
+    @MainActor
+    var isLocalSharingScreen: Bool {
+        switch self {
+        case .individual(let call):
+            return call.isLocalSharingScreen
+        case .groupThread(let call as GroupCall), .callLink(let call as GroupCall):
+            return call.isLocalSharingScreen
+        }
+    }
+
     func matches(_ callTarget: CallTarget) -> Bool {
         switch (self, callTarget) {
         case (.individual(let call), .individual(let thread)) where call.thread.uniqueId == thread.uniqueId:
@@ -181,6 +191,7 @@ class SignalCall: CallManagerCallReference {
     @MainActor var isOutgoingAudioMuted: Bool { mode.isOutgoingAudioMuted }
     @MainActor var isOutgoingVideoMuted: Bool { mode.isOutgoingVideoMuted }
     @MainActor var joinState: JoinState { mode.joinState }
+    @MainActor var isLocalSharingScreen: Bool { mode.isLocalSharingScreen }
     var isFull: Bool { mode.isFull }
     var caller: SignalServiceAddress? { mode.caller }
     var videoCaptureController: VideoCaptureController { mode.videoCaptureController }

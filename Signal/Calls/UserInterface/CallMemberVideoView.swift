@@ -13,6 +13,42 @@ class CallMemberVideoView: UIView, CallMemberComposableView {
 
     private lazy var blurredAvatarBackgroundView = BlurredAvatarBackgroundView()
 
+    /// Overlay shown when local user is sharing their screen.
+    private lazy var screenShareIndicatorView: UIView = {
+        let container = UIView()
+        container.backgroundColor = UIColor(rgbHex: 0x1B6EF3).withAlphaComponent(0.8)
+        container.isHidden = true
+
+        let icon = UIImageView(image: UIImage(named: "share_screen"))
+        icon.tintColor = .white
+        icon.translatesAutoresizingMaskIntoConstraints = false
+
+        let label = UILabel()
+        label.text = OWSLocalizedString(
+            "CALL_SCREEN_SHARE_ACTIVE_LABEL",
+            comment: "Label shown on the local video view when screen sharing is active."
+        )
+        label.textColor = .white
+        label.font = .dynamicTypeCaption1Clamped
+        label.textAlignment = .center
+        label.translatesAutoresizingMaskIntoConstraints = false
+
+        let stack = UIStackView(arrangedSubviews: [icon, label])
+        stack.axis = .vertical
+        stack.alignment = .center
+        stack.spacing = 4
+        stack.translatesAutoresizingMaskIntoConstraints = false
+
+        container.addSubview(stack)
+        NSLayoutConstraint.activate([
+            icon.widthAnchor.constraint(equalToConstant: 24),
+            icon.heightAnchor.constraint(equalToConstant: 24),
+            stack.centerXAnchor.constraint(equalTo: container.centerXAnchor),
+            stack.centerYAnchor.constraint(equalTo: container.centerYAnchor),
+        ])
+        return container
+    }()
+
     init(type: CallMemberView.MemberType) {
         self.type = type
         super.init(frame: .zero)
@@ -24,6 +60,10 @@ class CallMemberVideoView: UIView, CallMemberComposableView {
             self.addSubview(localVideoView)
             localVideoView.contentMode = .scaleAspectFill
             self.callViewWrapper = .local(localVideoView)
+
+            self.addSubview(screenShareIndicatorView)
+            screenShareIndicatorView.translatesAutoresizingMaskIntoConstraints = false
+            screenShareIndicatorView.autoPinEdgesToSuperviewEdges()
         case .remoteInIndividual:
             let remoteVideoView = RemoteVideoView()
             remoteVideoView.isGroupCall = false
@@ -61,9 +101,13 @@ class CallMemberVideoView: UIView, CallMemberComposableView {
         clipsToBounds = true
         switch type {
         case .local:
-            self.isHidden = call.isOutgoingVideoMuted || AppEnvironment.shared.windowManagerRef.isCallInPip
+            let isSharingScreen = call.isLocalSharingScreen
+            let isVideoOff = call.isOutgoingVideoMuted && !isSharingScreen
+            self.isHidden = isVideoOff || AppEnvironment.shared.windowManagerRef.isCallInPip
+            screenShareIndicatorView.isHidden = !isSharingScreen
             if case let .local(videoView) = callViewWrapper {
-                videoView.captureSession = call.videoCaptureController.captureSession
+                videoView.captureSession = isSharingScreen ? nil : call.videoCaptureController.captureSession
+                videoView.isHidden = isSharingScreen
             } else {
                 owsFailDebug("This should not be called when we're dealing with a remote video!")
             }

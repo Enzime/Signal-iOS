@@ -46,6 +46,7 @@ protocol IndividualCallObserver: AnyObject {
     @MainActor func individualCallRemoteAudioMuteDidChange(_ call: IndividualCall, isAudioMuted: Bool)
     @MainActor func individualCallRemoteVideoMuteDidChange(_ call: IndividualCall, isVideoMuted: Bool)
     @MainActor func individualCallRemoteSharingScreenDidChange(_ call: IndividualCall, isRemoteSharingScreen: Bool)
+    @MainActor func individualCallLocalSharingScreenDidChange(_ call: IndividualCall, isLocalSharingScreen: Bool)
 }
 
 extension IndividualCallObserver {
@@ -55,6 +56,7 @@ extension IndividualCallObserver {
     func individualCallRemoteAudioMuteDidChange(_ call: IndividualCall, isAudioMuted: Bool) {}
     func individualCallRemoteVideoMuteDidChange(_ call: IndividualCall, isVideoMuted: Bool) {}
     func individualCallRemoteSharingScreenDidChange(_ call: IndividualCall, isRemoteSharingScreen: Bool) {}
+    func individualCallLocalSharingScreenDidChange(_ call: IndividualCall, isLocalSharingScreen: Bool) {}
 }
 
 /**
@@ -127,6 +129,18 @@ public class IndividualCall: CustomDebugStringConvertible {
             Logger.info("\(isRemoteSharingScreen)")
             observers.elements.forEach {
                 $0.individualCallRemoteSharingScreenDidChange(self, isRemoteSharingScreen: isRemoteSharingScreen)
+            }
+        }
+    }
+
+    /// Tracks whether the local user is sharing their screen.
+    @MainActor
+    var isLocalSharingScreen = false {
+        didSet {
+            guard oldValue != isLocalSharingScreen else { return }
+            Logger.info("isLocalSharingScreen changed: \(isLocalSharingScreen)")
+            observers.elements.forEach {
+                $0.individualCallLocalSharingScreenDidChange(self, isLocalSharingScreen: isLocalSharingScreen)
             }
         }
     }

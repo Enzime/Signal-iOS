@@ -44,6 +44,7 @@ final class CallService: CallServiceStateObserver, CallServiceStateDelegate {
     let callLinkManager: CallLinkManagerImpl
     let callLinkFetcher: CallLinkFetcherImpl
     let callLinkStateUpdater: CallLinkStateUpdater
+    let screenShareManager = ScreenShareManager()
 
     private var adHocCallStateObserver: AdHocCallStateObserver?
 
@@ -291,6 +292,10 @@ final class CallService: CallServiceStateObserver, CallServiceStateDelegate {
         if callServiceState.currentCall == nil {
             audioSession.isRTCAudioEnabled = false
         }
+        // Stop screen sharing if active when call terminates
+        if screenShareManager.isSharing {
+            screenShareManager.stopSharing()
+        }
         audioSession.endAudioActivity(call.commonState.audioActivity)
         updateIsVideoEnabled()
 
@@ -403,6 +408,11 @@ final class CallService: CallServiceStateObserver, CallServiceStateDelegate {
     private func updateIsLocalVideoMutedWithCameraPermissions(call: SignalCall, isLocalVideoMuted: Bool) {
         owsPrecondition(call === callServiceState.currentCall)
 
+        // If screen sharing is active and we're re-enabling camera, stop screen share
+        if !isLocalVideoMuted && screenShareManager.isSharing {
+            stopScreenSharing(call: call)
+        }
+
         switch call.mode {
         case .groupThread(let call as GroupCall), .callLink(let call as GroupCall):
             call.ringRtcCall.isOutgoingVideoMuted = isLocalVideoMuted
@@ -416,6 +426,66 @@ final class CallService: CallServiceStateObserver, CallServiceStateDelegate {
 
     func updateCameraSource(call: SignalCall, isUsingFrontCamera: Bool) {
         call.videoCaptureController.switchCamera(isUsingFrontCamera: isUsingFrontCamera)
+    }
+
+    // MARK: - Screen Sharing
+
+    /// Toggles screen sharing for the current call.
+    func toggleScreenSharing() {
+        guard let currentCall = callServiceState.currentCall else {
+            owsFailDebug("No current call")
+            return
+        }
+
+        if screenShareManager.isSharing {
+            stopScreenSharing(call: currentCall)
+        } else {
+            startScreenSharing(call: currentCall)
+        }
+    }
+
+    private func startScreenSharing(call: SignalCall) {
+        guard screenShareManager.isAvailable else {
+            Logger.warn("Screen sharing is not available")
+            return
+        }
+
+        // Stop camera capture before starting screen share
+        call.videoCaptureController.stopCapture()
+
+        // Start screen capture
+        screenShareManager.startSharing()
+
+        // Update the call's screen sharing state
+        switch call.mode {
+        case .individual(let individualCall):
+            individualCall.isLocalSharingScreen = true
+            // Ensure video is marked as enabled so RingRTC sends the track
+            individualCall.hasLocalVideo = true
+            callManager.setLocalVideoEnabled(call: call, enabled: true)
+        case .groupThread(let groupCall as GroupCall), .callLink(let groupCall as GroupCall):
+            groupCall.isLocalSharingScreen = true
+            groupCall.ringRtcCall.isOutgoingVideoMuted = false
+            groupCall.groupCall(onLocalDeviceStateChanged: groupCall.ringRtcCall)
+        }
+    }
+
+    private func stopScreenSharing(call: SignalCall) {
+        screenShareManager.stopSharing()
+
+        // Restore camera capture
+        switch call.mode {
+        case .individual(let individualCall):
+            individualCall.isLocalSharingScreen = false
+            if individualCall.hasLocalVideo {
+                individualCall.videoCaptureController.startCapture()
+            }
+        case .groupThread(let groupCall as GroupCall), .callLink(let groupCall as GroupCall):
+            groupCall.isLocalSharingScreen = false
+            if !groupCall.ringRtcCall.isOutgoingVideoMuted {
+                groupCall.videoCaptureController.startCapture()
+            }
+        }
     }
 
     private func configureDataMode() {
@@ -513,8 +583,16 @@ final class CallService: CallServiceStateObserver, CallServiceStateDelegate {
 
         switch call.mode {
         case .individual(let individualCall):
+            // When screen sharing, video track should be enabled even if camera is not active
+            if individualCall.isLocalSharingScreen {
+                return individualCall.state == .connected
+            }
             return individualCall.state == .connected && individualCall.hasLocalVideo
         case .groupThread(let call as GroupCall), .callLink(let call as GroupCall):
+            // When screen sharing, keep video track active
+            if call.isLocalSharingScreen {
+                return true
+            }
             return !call.ringRtcCall.isOutgoingVideoMuted
         }
     }
@@ -526,6 +604,12 @@ final class CallService: CallServiceStateObserver, CallServiceStateDelegate {
         case .individual(let individualCall):
             if individualCall.isEnded {
                 individualCall.videoCaptureController.stopCapture()
+            } else if individualCall.isLocalSharingScreen {
+                // When screen sharing, don't start camera capture.
+                // Video is being provided by the screen share manager.
+                if individualCall.state == .connected || individualCall.state == .reconnecting {
+                    callManager.setLocalVideoEnabled(call: call, enabled: true)
+                }
             } else if individualCall.state == .connected || individualCall.state == .reconnecting {
                 callManager.setLocalVideoEnabled(call: call, enabled: shouldHaveLocalVideoTrack)
             } else if individualCall.isViewLoaded, individualCall.hasLocalVideo, !Platform.isSimulator {
@@ -538,6 +622,9 @@ final class CallService: CallServiceStateObserver, CallServiceStateDelegate {
         case .groupThread(let call as GroupCall), .callLink(let call as GroupCall):
             if call.shouldTerminateOnEndEvent {
                 call.videoCaptureController.stopCapture()
+            } else if call.isLocalSharingScreen {
+                // When screen sharing, don't start camera capture.
+                // Video is being provided by the screen share manager.
             } else {
                 if shouldHaveLocalVideoTrack {
                     call.videoCaptureController.startCapture()
@@ -783,6 +870,10 @@ final class CallService: CallServiceStateObserver, CallServiceStateDelegate {
     // MARK: - Notifications
 
     private func didEnterBackground() {
+        // In-app screen capture doesn't work in background, so stop it
+        if screenShareManager.isSharing, let call = callServiceState.currentCall {
+            stopScreenSharing(call: call)
+        }
         self.updateIsVideoEnabled()
     }
 

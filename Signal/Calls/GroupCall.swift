@@ -50,6 +50,16 @@ class GroupCall: SignalRingRTC.GroupCallDelegate {
     private(set) var raisedHands: [DemuxId] = []
     let videoCaptureController: VideoCaptureController
 
+    /// Tracks whether the local user is sharing their screen.
+    @MainActor
+    var isLocalSharingScreen = false {
+        didSet {
+            guard oldValue != isLocalSharingScreen else { return }
+            Logger.info("isLocalSharingScreen changed: \(isLocalSharingScreen)")
+            observers.elements.forEach { $0.groupCallLocalDeviceStateChanged(self) }
+        }
+    }
+
     /// Tracks whether or not we've called connect().
     ///
     /// We can't use ringRtcCall.connectionState because it's updated asynchronously.

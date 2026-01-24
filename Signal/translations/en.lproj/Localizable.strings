@@ -1363,6 +1363,15 @@
 /* Label on button for raising hand in call. */
 "CALL_RAISE_HAND_BUTTON_LABEL" = "Raise Hand";
 
+/* Label shown on the local video view when screen sharing is active. */
+"CALL_SCREEN_SHARE_ACTIVE_LABEL" = "Sharing Screen";
+
+/* Label on button to share screen in a call. */
+"CALL_SHARE_SCREEN_BUTTON_LABEL" = "Share Screen";
+
+/* Label on button to stop sharing screen in a call. */
+"CALL_STOP_SCREEN_SHARE_BUTTON_LABEL" = "Stop Sharing";
+
 /* Button to return to the current call */
 "CALL_RETURN_BUTTON" = "Return To Call";
 

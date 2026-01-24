@@ -92,7 +92,8 @@ class CallMemberCameraOffView: UIView, CallMemberComposableView {
 
         switch type {
         case .local:
-            self.isHidden = !call.isOutgoingVideoMuted
+            // Hide camera-off view when screen sharing (screen is being shared instead of camera)
+            self.isHidden = !call.isOutgoingVideoMuted || call.isLocalSharingScreen
         case .remoteInIndividual(let individualCall):
             self.isHidden = individualCall.isRemoteVideoEnabled
         case .remoteInGroup:
