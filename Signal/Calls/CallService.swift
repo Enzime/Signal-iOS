@@ -579,20 +579,25 @@ final class CallService: CallServiceStateObserver, CallServiceStateDelegate {
         // support or emulation (http://goo.gl/rHAnC1) so don't bother
         // trying to open a local stream.
         guard !Platform.isSimulator else { return false }
+
+        // When screen sharing, keep the video track active regardless of
+        // app state. RPScreenRecorder provides system-wide capture that
+        // continues in background during an active VoIP call.
+        if call.isLocalSharingScreen {
+            switch call.mode {
+            case .individual(let individualCall):
+                return individualCall.state == .connected
+            case .groupThread, .callLink:
+                return true
+            }
+        }
+
         guard UIApplication.shared.applicationState != .background else { return false }
 
         switch call.mode {
         case .individual(let individualCall):
-            // When screen sharing, video track should be enabled even if camera is not active
-            if individualCall.isLocalSharingScreen {
-                return individualCall.state == .connected
-            }
             return individualCall.state == .connected && individualCall.hasLocalVideo
         case .groupThread(let call as GroupCall), .callLink(let call as GroupCall):
-            // When screen sharing, keep video track active
-            if call.isLocalSharingScreen {
-                return true
-            }
             return !call.ringRtcCall.isOutgoingVideoMuted
         }
     }
@@ -870,10 +875,6 @@ final class CallService: CallServiceStateObserver, CallServiceStateDelegate {
     // MARK: - Notifications
 
     private func didEnterBackground() {
-        // In-app screen capture doesn't work in background, so stop it
-        if screenShareManager.isSharing, let call = callServiceState.currentCall {
-            stopScreenSharing(call: call)
-        }
         self.updateIsVideoEnabled()
     }
 

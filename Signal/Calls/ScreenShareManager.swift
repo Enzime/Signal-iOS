@@ -8,8 +8,16 @@ import ReplayKit
 import SignalServiceKit
 import WebRTC
 
-/// Manages local screen capture using ReplayKit and provides frames
-/// to the call's video pipeline via WebRTC's RTCVideoCapturer interface.
+/// Manages system-wide screen capture using ReplayKit's startCapture API.
+///
+/// `RPScreenRecorder.startCapture` provides full device screen capture including
+/// content from other apps, the home screen, and system UI. The system will
+/// prompt the user for permission on first use via a system dialog.
+///
+/// During an active VoIP call, the app retains background execution privileges,
+/// allowing screen capture to continue when the user switches to other apps.
+/// If the system terminates capture (e.g., due to resource pressure), the error
+/// handler will automatically trigger `stopSharing()`.
 @MainActor
 class ScreenShareManager: NSObject {
     private let screenRecorder = RPScreenRecorder.shared()
@@ -20,11 +28,6 @@ class ScreenShareManager: NSObject {
             observers.elements.forEach { $0.screenShareManagerDidChangeState(self) }
         }
     }
-
-    /// The video source that receives screen capture frames.
-    /// This is created from the WebRTC PeerConnectionFactory and can be
-    /// used to replace the camera source when screen sharing.
-    private var videoSource: RTCVideoSource?
 
     /// Custom capturer that acts as a bridge between ReplayKit and WebRTC.
     private var videoCapturer: ScreenShareCapturer?
@@ -102,7 +105,6 @@ class ScreenShareManager: NSObject {
                 }
                 self?.isSharing = false
                 self?.videoCapturer = nil
-                self?.videoSource = nil
                 Logger.info("Screen capture stopped")
             }
         }
@@ -114,8 +116,6 @@ class ScreenShareManager: NSObject {
 /// A lightweight bridge that converts CMSampleBuffer frames from ReplayKit
 /// into RTCVideoFrames suitable for WebRTC transmission.
 class ScreenShareCapturer: NSObject {
-    private var lastFrameTime: CMTime = .zero
-
     func didCapture(sampleBuffer: CMSampleBuffer) {
         guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
             return
